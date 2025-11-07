@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+@layer base {
+  :root {
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 11%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 187 92% 43%;
+    --primary-foreground: 222 47% 11%;
+    --secondary: 215 20% 65%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 215 20% 25%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 25 95% 61%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 215 20% 25%;
+    --input: 215 20% 25%;
+    --ring: 187 92% 43%;
+    --chart-1: 187 92% 43%;
+    --chart-2: 25 95% 61%;
+    --chart-3: 210 40% 98%;
+    --chart-4: 215 20% 65%;
+    --chart-5: 142 76% 36%;
+    --radius: 0.5rem;
+  }
+  .dark {
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 11%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 187 92% 43%;
+    --primary-foreground: 222 47% 11%;
+    --secondary: 215 20% 65%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 215 20% 25%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 25 95% 61%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 215 20% 25%;
+    --input: 215 20% 25%;
+    --ring: 187 92% 43%;
+    --chart-1: 187 92% 43%;
+    --chart-2: 25 95% 61%;
+    --chart-3: 210 40% 98%;
+    --chart-4: 215 20% 65%;
+    --chart-5: 142 76% 36%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-space-blue text-foreground;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-electric-cyan to-accent-orange bg-clip-text text-transparent;
+  }
+}
