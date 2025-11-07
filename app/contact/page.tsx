@@ -199,7 +199,7 @@ export default function ContactPage() {
                         href="mailto:support@atlascloud.hosting"
                         className="text-soft-silver/80 hover:text-electric-cyan transition-colors"
                       >
-                        support@atlascloud.hosting
+                        support@atlascloudhosting.com
                       </a>
                       <p className="text-soft-silver/60 text-sm mt-1">Response within 24 hours</p>
                     </div>
