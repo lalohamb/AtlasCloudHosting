@@ -27,7 +27,7 @@ export default function Navigation() {
               <AtlasLogo />
             </div>
             <span className="text-xl font-bold text-white">
-              Atlas Cloud<span className="text-electric-cyan">.</span>
+              Atlas Cloud Hosting<span className="text-electric-cyan">.</span>
             </span>
           </Link>
 
