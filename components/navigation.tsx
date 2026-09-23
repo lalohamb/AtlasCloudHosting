@@ -1,22 +1,23 @@
 "use client";
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import AtlasLogo from '@/components/atlas-logo';
 
+const navLinks = [
+  { href: '/cloud', label: 'Cloud' },
+  { href: '/products', label: 'Products' },
+  { href: '/web3', label: 'Web3' },
+  { href: '/pricing', label: 'Pricing' },
+  { href: '/about', label: 'About' },
+];
+
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
-
-  const navLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/plans', label: 'Plans' },
-    { href: '/about', label: 'About' },
-    { href: '/partners', label: 'Partners' },
-    { href: '/status', label: 'Status' },
-    { href: '/contact', label: 'Contact' },
-  ];
+  const pathname = usePathname();
 
   return (
     <nav className="fixed top-0 w-full bg-space-blue/95 backdrop-blur-sm border-b border-white/10 z-50">
@@ -27,7 +28,7 @@ export default function Navigation() {
               <AtlasLogo />
             </div>
             <span className="text-xl font-bold text-white">
-              Atlas Cloud Hosting<span className="text-electric-cyan">.</span>
+              Atlas Cloud<span className="text-electric-cyan">.</span>
             </span>
           </Link>
 
@@ -36,14 +37,28 @@ export default function Navigation() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-soft-silver hover:text-electric-cyan transition-colors text-sm font-medium"
+                className={`text-sm font-medium transition-colors ${
+                  pathname === link.href || pathname.startsWith(link.href + '/')
+                    ? 'text-electric-cyan'
+                    : 'text-soft-silver hover:text-electric-cyan'
+                }`}
               >
                 {link.label}
               </Link>
             ))}
-            <Button className="bg-electric-cyan hover:bg-electric-cyan/90 text-space-blue font-semibold">
-              Get Started
-            </Button>
+          </div>
+
+          <div className="hidden md:flex items-center gap-3">
+            <Link href="https://app.atlascloudhosting.com" target="_blank" rel="noopener noreferrer">
+              <Button variant="ghost" className="text-soft-silver hover:text-white hover:bg-white/10">
+                Sign In
+              </Button>
+            </Link>
+            <Link href="/contact">
+              <Button className="bg-electric-cyan hover:bg-electric-cyan/90 text-space-blue font-semibold">
+                Get Started
+              </Button>
+            </Link>
           </div>
 
           <button
@@ -56,20 +71,31 @@ export default function Navigation() {
         </div>
 
         {isOpen && (
-          <div className="md:hidden pb-4 space-y-3">
+          <div className="md:hidden pb-4 space-y-1 border-t border-white/10 pt-4">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsOpen(false)}
-                className="block text-soft-silver hover:text-electric-cyan transition-colors py-2"
+                className={`block py-2 text-sm font-medium transition-colors ${
+                  pathname === link.href ? 'text-electric-cyan' : 'text-soft-silver hover:text-electric-cyan'
+                }`}
               >
                 {link.label}
               </Link>
             ))}
-            <Button className="w-full bg-electric-cyan hover:bg-electric-cyan/90 text-space-blue font-semibold mt-2">
-              Get Started
-            </Button>
+            <div className="flex flex-col gap-2 pt-3">
+              <Link href="https://app.atlascloudhosting.com" target="_blank" rel="noopener noreferrer">
+                <Button variant="outline" className="w-full border-white/20 text-soft-silver hover:text-white">
+                  Sign In
+                </Button>
+              </Link>
+              <Link href="/contact" onClick={() => setIsOpen(false)}>
+                <Button className="w-full bg-electric-cyan hover:bg-electric-cyan/90 text-space-blue font-semibold">
+                  Get Started
+                </Button>
+              </Link>
+            </div>
           </div>
         )}
       </div>

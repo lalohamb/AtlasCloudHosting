@@ -1,0 +1,1440 @@
+# ATLAS CLOUD HOSTING — PLATFORM & WEBSITE MODERNIZATION
+
+## ROLE
+
+You are a senior SaaS architect, Next.js engineer, cloud-platform engineer, UX designer, and DevOps engineer.
+
+You are working on the existing Atlas Cloud Hosting website:
+
+`atlascloudhosting.com`
+
+Your responsibility is to modernize the existing site and product architecture without unnecessarily rebuilding working components.
+
+Atlas is transitioning away from traditional WordPress hosting and becoming a managed cloud platform for:
+
+* Modern web applications
+* Next.js applications
+* Node.js applications
+* APIs and backend services
+* Docker/container workloads
+* Databases
+* SaaS applications
+* Automation services
+* Web3 applications
+* Dedicated cloud infrastructure
+* Managed DevOps
+* Atlas-hosted software products
+
+A major new business line called **Atlas Products** must also be introduced.
+
+Atlas Products will sell ready-to-launch web applications that are hosted and managed on Atlas Cloud.
+
+The first product will be a **Print-on-Demand Storefront**, designed to integrate with Printify.
+
+---
+
+# 1. FIRST: INSPECT THE EXISTING PROJECT
+
+Before changing code:
+
+1. Inspect the complete existing repository.
+2. Identify:
+
+   * Framework/version
+   * Routing structure
+   * Components
+   * Layouts
+   * Styling system
+   * Existing authentication
+   * Database integration
+   * Billing integration
+   * Existing APIs
+   * Existing forms
+   * Current deployment assumptions
+3. Identify reusable components.
+4. Identify all references to:
+
+   * WordPress
+   * traditional hosting
+   * shared hosting
+   * existing pricing
+   * existing testimonials
+   * existing hosting packages
+5. Do NOT immediately rewrite the application.
+6. Preserve working functionality wherever practical.
+7. Do not change production infrastructure or credentials.
+8. Never expose secrets to client-side code.
+
+Produce a short inspection report before implementation.
+
+---
+
+# 2. NEW ATLAS POSITIONING
+
+Atlas should no longer be positioned as a traditional web-hosting provider.
+
+The primary positioning is:
+
+## Atlas Cloud
+
+**Cloud Infrastructure Without the Complexity**
+
+Supporting message:
+
+> Deploy applications, APIs, containers, databases, SaaS platforms, automation services, and Web3 workloads without managing the underlying infrastructure.
+
+Atlas should be positioned as the managed layer between customers and underlying infrastructure.
+
+Conceptually:
+
+Customer
+→ Atlas Cloud
+→ Provisioning / Deployment / Management
+→ Infrastructure Provider
+→ Customer Application
+
+DigitalOcean may be the underlying infrastructure provider, but the customer purchases and manages their services through Atlas.
+
+Do not make the website look like a DigitalOcean reseller.
+
+Atlas is the product.
+
+---
+
+# 3. REMOVE WORDPRESS POSITIONING
+
+Remove WordPress from the Atlas product strategy and primary marketing.
+
+Remove or rewrite references such as:
+
+* WordPress Hosting
+* Managed WordPress
+* WordPress Sites
+* WordPress optimization
+* WordPress-specific pricing
+* "From WordPress to Web3"
+
+Replace them with modern application-cloud terminology.
+
+Primary supported workload categories should include:
+
+* Next.js
+* Node.js
+* Docker
+* APIs
+* Backend services
+* Databases
+* SaaS applications
+* Automation services
+* Web3 applications
+
+Do not claim technical support for a runtime until Atlas actually supports it.
+
+Structure the code so additional runtimes can be added later.
+
+---
+
+# 4. NAVIGATION
+
+Update the primary navigation to approximately:
+
+* Cloud
+* Products
+* Web3
+* Pricing
+* Docs
+* About
+
+Actions:
+
+* Sign In
+* Get Started
+
+Use existing routes where appropriate.
+
+Recommended routes:
+
+`/`
+
+`/cloud`
+
+`/products`
+
+`/products/pod-storefront`
+
+`/web3`
+
+`/pricing`
+
+`/docs`
+
+`/about`
+
+`/contact`
+
+Prepare the architecture for a future customer control plane at:
+
+`app.atlascloudhosting.com`
+
+Do NOT build an entirely separate control plane unless the existing project already supports this architecture.
+
+---
+
+# 5. HOMEPAGE
+
+Update the homepage hero.
+
+## Headline
+
+**Cloud Infrastructure Without the Complexity**
+
+## Supporting copy
+
+Deploy applications, APIs, containers, databases, SaaS platforms, and Web3 workloads on managed cloud infrastructure.
+
+## Primary CTA
+
+**Deploy Your App**
+
+## Secondary CTA
+
+**Explore Cloud Plans**
+
+Below the hero, communicate the major Atlas capabilities.
+
+### Application Cloud
+
+Deploy modern applications, APIs, backend services, and containerized workloads.
+
+### Managed Infrastructure
+
+Atlas handles infrastructure provisioning, networking, SSL, monitoring, backups, and deployment operations.
+
+### Web3 Ready
+
+Deploy dApps, Web3 APIs, blockchain backend services, and specialized decentralized infrastructure.
+
+### Atlas Products
+
+Launch ready-made business applications already optimized and hosted on Atlas Cloud.
+
+CTA:
+
+**Explore Products**
+
+---
+
+# 6. REMOVE UNSUBSTANTIATED SOCIAL PROOF
+
+Inspect existing claims such as:
+
+* thousands of developers
+* thousands of businesses
+* customer counts
+* uptime statistics
+* performance claims
+* testimonials
+
+Do not fabricate customer numbers, testimonials, SLA percentages, uptime percentages, performance metrics, or infrastructure claims.
+
+If existing testimonials cannot be verified as genuine, replace that section with capability-oriented trust indicators such as:
+
+* Managed Infrastructure
+* Container Deployment
+* Automated SSL
+* Automated Backups
+* Application Monitoring
+* Private Networking
+* Git Deployment
+* Managed DevOps
+
+---
+
+# 7. CLOUD PAGE
+
+Create or update:
+
+`/cloud`
+
+This page should explain Atlas's managed application infrastructure.
+
+Organize the offering around:
+
+## Application Hosting
+
+For modern web applications and backend services.
+
+## Container Hosting
+
+Deploy Docker-based applications.
+
+## API & Backend Hosting
+
+Run APIs, workers, services, and backend workloads.
+
+## Database Services
+
+Support managed database architecture where available.
+
+## Monitoring
+
+Application and infrastructure health monitoring.
+
+## Backups
+
+Automated backup and recovery options.
+
+## Private Networking
+
+Available for appropriate higher-tier environments.
+
+## Dedicated Infrastructure
+
+Dedicated compute and networking for advanced workloads.
+
+CTA:
+
+**Deploy on Atlas**
+
+---
+
+# 8. CLOUD PRICING
+
+Replace WordPress-oriented pricing.
+
+Use the following structure as the initial business model.
+
+Exact infrastructure limits must remain configurable.
+
+## DEVELOPER
+
+**$15/month**
+
+For developers, prototypes, and lightweight applications.
+
+Target configuration:
+
+* 1 Application
+* 1 GB RAM allocation
+* Shared compute
+* 10 GB storage
+* 50 GB bandwidth
+* Docker deployment
+* Node.js / Next.js
+* API/backend hosting
+* 1 database
+* Git-based deployment
+* Custom domain
+* SSL
+* Daily backups
+* Basic monitoring
+* Email support
+
+CTA:
+
+**Start Building**
+
+---
+
+## PROFESSIONAL
+
+**$39/month**
+
+Mark:
+
+**MOST POPULAR**
+
+For production applications and growing projects.
+
+Target configuration:
+
+* Up to 3 applications
+* 1 vCPU compute allocation
+* 2 GB RAM
+* 50 GB storage
+* 250 GB bandwidth
+* Docker
+* Next.js / Node.js
+* APIs/backend services
+* Up to 2 databases
+* Git deployments
+* Staging environment
+* Custom domains
+* SSL
+* Daily backups
+* Application monitoring
+* Priority support
+
+CTA:
+
+**Deploy Now**
+
+---
+
+## BUSINESS
+
+**$79/month**
+
+For SaaS products, APIs, and business applications.
+
+Target configuration:
+
+* Up to 8 applications
+* 2 vCPU compute allocation
+* 4 GB RAM
+* 100 GB storage
+* 1 TB bandwidth
+* Docker workloads
+* Next.js / Node.js
+* API/backend hosting
+* Up to 5 databases
+* Private application networking
+* Staging environments
+* Git deployments
+* Advanced monitoring
+* Automated backups
+* Deployment assistance
+* Priority technical support
+
+CTA:
+
+**Deploy on Atlas**
+
+---
+
+## DEDICATED CLOUD
+
+**Starting at $149/month**
+
+For advanced applications, Web3 workloads, and customers requiring stronger isolation or dedicated resources.
+
+Target capabilities:
+
+* Dedicated compute options
+* 4+ vCPU
+* 8+ GB RAM
+* 250+ GB storage
+* Configurable bandwidth
+* Multiple applications
+* Docker workloads
+* Private networking
+* Advanced monitoring
+* Configurable backups
+* Web3 workloads
+* Managed deployment assistance
+* Priority technical support
+
+CTA:
+
+**Configure Cloud**
+
+Use "Starting at" because dedicated configurations may vary in cost.
+
+---
+
+# 9. ENTERPRISE
+
+Place Enterprise below the primary pricing cards rather than making it another ordinary package.
+
+Headline:
+
+## Need More Infrastructure?
+
+### Atlas Enterprise
+
+Custom infrastructure for demanding workloads.
+
+Capabilities may include:
+
+* Dedicated infrastructure
+* Custom CPU
+* Custom RAM
+* Custom storage
+* Multi-server environments
+* Kubernetes
+* Load balancing
+* High availability
+* Private networking
+* Managed databases
+* Advanced security
+* Custom monitoring
+* Disaster recovery
+* Multi-region architecture
+* Managed DevOps
+* Custom SLA
+
+CTA:
+
+**Contact Atlas**
+
+Do not promise a feature unless technically available.
+
+---
+
+# 10. CUSTOM CLOUD RESOURCES
+
+Design the pricing/data architecture so customers can eventually add resources without changing plans.
+
+Potential configurable resources:
+
+* Additional vCPU
+* Additional RAM
+* Additional storage
+* Additional bandwidth
+* Additional applications
+* Additional databases
+* Backup retention
+* Dedicated IP
+* Advanced monitoring
+* Managed DevOps
+* Web3 infrastructure
+
+Do NOT hard-code these add-on prices throughout components.
+
+Create centralized pricing/configuration data.
+
+For example:
+
+`config/plans.ts`
+
+or an equivalent architecture appropriate to the existing codebase.
+
+---
+
+# 11. FUTURE CLOUD CONFIGURATOR
+
+Prepare the frontend architecture for a future:
+
+## Build Your Atlas Cloud
+
+Potential controls:
+
+### Application Type
+
+* Docker
+* Next.js
+* Node.js
+* API
+* Worker
+* Custom
+
+### Compute
+
+* 1 vCPU
+* 2 vCPU
+* 4 vCPU
+* 8 vCPU
+* 16+ vCPU
+
+### Memory
+
+* 1 GB
+* 2 GB
+* 4 GB
+* 8 GB
+* 16 GB
+* 32+ GB
+
+### Storage
+
+* 25 GB
+* 50 GB
+* 100 GB
+* 250 GB
+* 500 GB
+* 1 TB+
+
+### Database
+
+* PostgreSQL
+* MySQL
+* Redis
+* None
+
+Only display technologies Atlas actually supports.
+
+### Infrastructure
+
+* Shared
+* Enhanced
+* Dedicated
+* High Availability
+
+### Web3
+
+* None
+* dApp
+* Blockchain API
+* RPC
+* Custom
+
+The UI should eventually calculate:
+
+**Estimated Monthly Cost**
+
+Do not implement fake provisioning or fake prices.
+
+If backend pricing logic does not yet exist, clearly mark the configurator as a future-ready component rather than simulating purchases.
+
+---
+
+# 12. ATLAS PRODUCTS
+
+Create a major new section:
+
+`/products`
+
+Atlas Products is NOT the same thing as generic cloud hosting.
+
+Cloud customers bring their own applications.
+
+Atlas Product customers purchase ready-to-launch applications already designed to operate on Atlas.
+
+Primary headline:
+
+# Ready-to-Launch Business Applications
+
+Supporting message:
+
+> Launch production-ready web applications without building the technology yourself. Atlas Products combines application software, managed hosting, deployment, monitoring, updates, and infrastructure.
+
+CTA:
+
+**Explore Atlas Products**
+
+---
+
+# 13. PRODUCT MARKETPLACE ARCHITECTURE
+
+Do not design `/products` only for Printify.
+
+Build it as a reusable product catalog capable of supporting future Atlas products.
+
+Each product object should support fields similar to:
+
+* name
+* slug
+* shortDescription
+* longDescription
+* category
+* startingPrice
+* billingType
+* setupFee
+* monthlyPrice
+* features
+* integrations
+* screenshots
+* status
+* featured
+* CTA
+* documentation URL
+
+Future categories might include:
+
+* E-commerce
+* AI
+* Automation
+* SaaS
+* Digital Commerce
+* Web3
+* Business Operations
+
+Do not populate the catalog with fake products.
+
+Only display active products.
+
+---
+
+# 14. FIRST PRODUCT — PRINT-ON-DEMAND STOREFRONT
+
+Create:
+
+`/products/pod-storefront`
+
+Product name:
+
+# Print-on-Demand Storefront
+
+Supporting message:
+
+**Launch your own branded print-on-demand business.**
+
+Description:
+
+A complete e-commerce storefront designed for Printify-powered businesses and hosted on Atlas Cloud.
+
+Potential capabilities include:
+
+* Branded storefront
+* Printify API integration
+* Product synchronization
+* Product collections
+* Product categories
+* Customer accounts
+* Shopping cart
+* Checkout
+* Stripe payment integration
+* Order management
+* Printify order workflow
+* Custom domain
+* SSL
+* Atlas Cloud hosting
+* Database
+* Backups
+* Monitoring
+* Admin dashboard
+* Platform updates
+
+IMPORTANT:
+
+Inspect the actual POD application before claiming that any capability exists.
+
+Clearly distinguish:
+
+* Available
+* Planned
+* Optional
+* Requires configuration
+
+Do not fabricate functionality.
+
+---
+
+# 15. PRODUCT PRICING MODEL
+
+Architect Atlas Products so product pricing can differ from raw cloud pricing.
+
+The customer purchasing a software product should not have to understand vCPU, RAM, container limits, or underlying server architecture.
+
+Product pricing should be based primarily on business functionality.
+
+Support pricing models such as:
+
+### SaaS
+
+Example:
+
+`$XX/month`
+
+Includes:
+
+* Application
+* Atlas hosting
+* Updates
+* Backups
+* Monitoring
+
+### Setup + Subscription
+
+Example architecture:
+
+`$XXX setup`
+
+plus
+
+`$XX/month`
+
+Do NOT finalize actual POD Storefront pricing unless pricing has been explicitly approved.
+
+Use configurable placeholders/data structures if pricing remains undecided.
+
+---
+
+# 16. HOSTED ON ATLAS CLOUD
+
+Every Atlas Product should display:
+
+**Hosted on Atlas Cloud**
+
+This should become a reusable trust badge/component.
+
+Example:
+
+`Hosted on Atlas Cloud`
+
+Supporting tooltip or text:
+
+> Managed infrastructure, SSL, monitoring, backups, and deployment included.
+
+The objective is for Atlas Products to generate customers for the Atlas infrastructure ecosystem.
+
+---
+
+# 17. PRODUCT CUSTOMER EXPERIENCE
+
+Prepare architecture for the following eventual workflow:
+
+Customer visits Atlas Products
+
+→ Selects POD Storefront
+
+→ Reviews features
+
+→ Chooses package
+
+→ Creates Atlas account
+
+→ Configures business/store
+
+→ Checkout
+
+→ Subscription activates
+
+→ Atlas provisions application environment
+
+→ Application configuration begins
+
+→ Customer receives dashboard
+
+→ Customer connects Printify
+
+→ Customer connects Stripe
+
+→ Customer configures domain
+
+→ Store launches
+
+Do NOT fake automation that has not yet been implemented.
+
+Use status states where appropriate:
+
+* Pending
+* Provisioning
+* Configuration Required
+* Ready
+* Running
+* Suspended
+* Failed
+
+---
+
+# 18. FUTURE ATLAS CONTROL PLANE
+
+Prepare the architecture for:
+
+`app.atlascloudhosting.com`
+
+Potential sections:
+
+* Dashboard
+* Projects
+* Applications
+* Products
+* Databases
+* Domains
+* Deployments
+* Backups
+* Monitoring
+* Usage
+* Billing
+* Settings
+* Support
+
+Do not unnecessarily implement all of these now.
+
+Design current links, data structures, authentication, and navigation so migration to this architecture is practical.
+
+---
+
+# 19. DIGITALOCEAN PROVISIONING — FUTURE ARCHITECTURE
+
+Atlas should be capable of automatically provisioning infrastructure after successful customer purchase.
+
+Conceptual flow:
+
+Customer
+
+→ Atlas Signup
+
+→ Select Plan/Product
+
+→ Checkout
+
+→ Payment confirmation
+
+→ Atlas provisioning service
+
+→ DigitalOcean API
+
+→ Infrastructure creation
+
+→ Deployment layer
+
+→ Application deployment
+
+→ Health verification
+
+→ Customer environment marked READY
+
+DigitalOcean credentials must NEVER be exposed to customers or client-side JavaScript.
+
+All infrastructure API calls must originate from secure server-side services.
+
+---
+
+# 20. SHARED VS DEDICATED INFRASTRUCTURE
+
+Design for two provisioning models.
+
+## Shared Atlas Compute
+
+Suitable for lower tiers.
+
+Concept:
+
+Atlas-managed compute node
+
+→ isolated customer workload A
+→ isolated customer workload B
+→ isolated customer workload C
+
+Resource limits must be enforced.
+
+Do not call shared resources "dedicated."
+
+Use terminology such as:
+
+* Compute allocation
+* Memory allocation
+* Managed compute
+
+## Dedicated Atlas Cloud
+
+Suitable for:
+
+* Dedicated Cloud
+* Advanced Web3
+* Enterprise
+
+Potential provisioning:
+
+Customer
+
+→ Dedicated DigitalOcean resource
+
+→ Private networking
+
+→ Firewall
+
+→ Deployment runtime
+
+→ Customer workload
+
+Dedicated infrastructure should be provisioned only when the customer's plan or configuration supports its underlying cost.
+
+---
+
+# 21. DEPLOYMENT / ORCHESTRATION LAYER
+
+Design Atlas so the infrastructure provider and application deployment layer remain decoupled.
+
+Conceptually:
+
+Atlas Control Plane
+
+→ Provisioning Service
+
+→ Infrastructure Provider API
+
+AND
+
+→ Deployment/Container Platform
+
+This prevents Atlas from becoming tightly coupled to one vendor.
+
+If Coolify is already part of the operational environment, evaluate using its supported interfaces for:
+
+* Application deployment
+* Container management
+* Databases
+* Domains
+* deployment status
+
+Do not make unsupported assumptions about APIs.
+
+Document findings before implementation.
+
+---
+
+# 22. CONTROL PLANE ARCHITECTURE
+
+Prepare for an Atlas SaaS control plane containing:
+
+* Authentication
+* Users
+* Organizations/Tenants
+* Subscriptions
+* Plans
+* Entitlements
+* Products
+* Product Instances
+* Projects
+* Applications
+* Environments
+* Infrastructure Resources
+* Deployments
+* Domains
+* Databases
+* Usage
+* Billing
+* Provisioning Jobs
+* Audit Logs
+
+Use a tenant-aware architecture.
+
+Never trust tenant IDs submitted directly by the browser without authorization checks.
+
+---
+
+# 23. PROVISIONING STATE MACHINE
+
+Provisioning must eventually be asynchronous.
+
+Do not assume infrastructure becomes available instantly after checkout.
+
+Use states similar to:
+
+`pending`
+
+`payment_confirmed`
+
+`queued`
+
+`provisioning`
+
+`configuring`
+
+`deploying`
+
+`verifying`
+
+`ready`
+
+`failed`
+
+`suspended`
+
+`deprovisioning`
+
+`deleted`
+
+Store errors securely for administrative troubleshooting.
+
+Customer-facing error messages should not expose infrastructure secrets.
+
+---
+
+# 24. BILLING AND PROVISIONING MUST BE SEPARATE
+
+Do not allow Stripe or another billing provider to directly control application authorization.
+
+Billing determines subscription state.
+
+Atlas determines entitlements.
+
+Architecture:
+
+Payment Provider
+
+→ webhook
+
+→ Atlas subscription record
+
+→ entitlement service
+
+→ provisioning job
+
+→ infrastructure
+
+Use webhook idempotency.
+
+Never provision duplicate infrastructure because a payment webhook was delivered more than once.
+
+---
+
+# 25. MANAGED DEVOPS
+
+Separate infrastructure hosting from engineering labor.
+
+Hosting may include:
+
+* automated deployment
+* SSL
+* backups
+* monitoring
+* container operation
+* standard platform maintenance
+
+Managed DevOps may include:
+
+* migrations
+* custom deployment configuration
+* CI/CD engineering
+* Docker troubleshooting
+* architecture changes
+* database migration
+* custom monitoring
+* infrastructure optimization
+
+Create a service area for:
+
+## Atlas Managed DevOps
+
+Potential service categories:
+
+* Deployment Assistance
+* Managed DevOps
+* Custom Engineering
+* Enterprise DevOps
+
+Do not promise unlimited engineering labor as part of inexpensive cloud packages.
+
+---
+
+# 26. WEB3
+
+Create/update:
+
+`/web3`
+
+Position Web3 as an advanced Atlas capability rather than something every customer is forced to purchase.
+
+Potential services:
+
+* dApp hosting
+* Web3 APIs
+* Blockchain backend services
+* RPC infrastructure
+* Blockchain nodes
+* Indexers
+* IPFS-related services
+* Smart-contract backend infrastructure
+* x402-compatible infrastructure
+* Dedicated blockchain workloads
+
+Again, only advertise capabilities that Atlas actually supports.
+
+Use:
+
+**Web3 infrastructure available from Atlas**
+
+rather than claiming every service is included with every package.
+
+---
+
+# 27. ABOUT PAGE
+
+Remove WordPress-centric language.
+
+Reposition Atlas around managed cloud infrastructure.
+
+Suggested message:
+
+# Infrastructure Built Around Your Application
+
+Atlas Cloud provides managed infrastructure for developers, businesses, SaaS platforms, and Web3 applications.
+
+We combine application deployment, cloud infrastructure, monitoring, backups, security, and operational tooling into a unified managed platform.
+
+From a single application to dedicated multi-server environments, Atlas is designed to make cloud deployment accessible without requiring every customer to become an infrastructure engineer.
+
+Avoid unsupported claims.
+
+---
+
+# 28. SEO
+
+Update metadata across the site.
+
+Relevant themes include:
+
+* managed cloud hosting
+* application hosting
+* Docker hosting
+* Next.js hosting
+* Node.js hosting
+* API hosting
+* SaaS hosting
+* managed cloud infrastructure
+* developer cloud hosting
+* Web3 hosting
+* dApp hosting
+* managed DevOps
+* application deployment
+* print-on-demand storefront
+* hosted POD platform
+
+Do not keyword-stuff.
+
+Every major page should have:
+
+* unique title
+* unique description
+* canonical URL
+* Open Graph metadata
+* appropriate structured data where applicable
+* semantic headings
+* accessible navigation
+
+---
+
+# 29. DESIGN
+
+Preserve the strongest parts of the existing Atlas brand.
+
+Do not redesign simply for the sake of redesigning.
+
+The desired appearance is:
+
+* modern
+* technical
+* professional
+* cloud-oriented
+* premium
+* trustworthy
+* clean
+* developer-friendly
+
+Avoid making Atlas look like:
+
+* cheap shared hosting
+* a generic template
+* a cryptocurrency promotion site
+* a DigitalOcean reseller
+* a WordPress hosting company
+
+Products should visually belong to the same Atlas ecosystem while remaining clearly distinguishable from infrastructure services.
+
+---
+
+# 30. COMPONENTIZATION
+
+Create reusable components where appropriate:
+
+* Hero
+* CloudPlanCard
+* PricingComparison
+* FeatureGrid
+* ProductCard
+* ProductGrid
+* AtlasHostedBadge
+* InfrastructureFeature
+* CTASection
+* FAQ
+* ProductFeatureList
+* ProductPricing
+* DeploymentStatus
+* ResourceSelector
+
+Avoid duplicating pricing and product information across components.
+
+Centralize data wherever practical.
+
+---
+
+# 31. MOBILE AND ACCESSIBILITY
+
+All new pages must be responsive.
+
+Test:
+
+* mobile
+* tablet
+* desktop
+* large desktop
+
+Ensure:
+
+* keyboard navigation
+* visible focus states
+* semantic HTML
+* sufficient contrast
+* accessible buttons
+* accessible forms
+* meaningful alt text
+* no horizontal overflow
+
+---
+
+# 32. SECURITY
+
+Do not:
+
+* expose DigitalOcean API tokens
+* expose Stripe secrets
+* expose database service-role credentials
+* expose deployment platform credentials
+* trust browser-supplied pricing
+* trust browser-supplied plan entitlements
+* provision infrastructure directly from client-side code
+
+Sensitive operations must occur server-side.
+
+Validate authorization for every tenant resource.
+
+---
+
+# 33. DO NOT OVERBUILD
+
+This implementation should occur incrementally.
+
+## PHASE 1 — WEBSITE REPOSITIONING
+
+Implement:
+
+* Navigation
+* Homepage
+* Cloud page
+* Pricing page
+* Web3 page
+* About page
+* Products landing page
+* POD Storefront product page
+* SEO
+* reusable product/pricing architecture
+
+Do NOT automatically build the entire cloud control plane during Phase 1.
+
+---
+
+# 34. PHASE 2 — ATLAS CONTROL PLANE
+
+Future implementation:
+
+* Authentication
+* Tenant accounts
+* Customer dashboard
+* Subscriptions
+* Plan entitlements
+* Projects
+* Product instances
+* Billing
+* Admin dashboard
+
+---
+
+# 35. PHASE 3 — AUTOMATED PROVISIONING
+
+Future implementation:
+
+* DigitalOcean API integration
+* provisioning worker
+* infrastructure templates
+* deployment integration
+* asynchronous jobs
+* retry handling
+* rollback handling
+* health checks
+* infrastructure state synchronization
+
+---
+
+# 36. PHASE 4 — SELF-SERVICE CLOUD
+
+Future implementation:
+
+* Build Your Cloud configurator
+* resource upgrades
+* application deployments
+* databases
+* domains
+* backups
+* monitoring
+* usage
+* billing changes
+* automated scaling where supported
+
+---
+
+# 37. REQUIRED OUTPUT AFTER PHASE 1
+
+After implementation, provide a report containing:
+
+## Existing Architecture
+
+What was found.
+
+## Changes Made
+
+Every significant file/page/component changed.
+
+## New Routes
+
+List all routes.
+
+## Removed WordPress References
+
+List where WordPress positioning was removed.
+
+## Pricing Architecture
+
+Explain where plan data resides.
+
+## Atlas Products Architecture
+
+Explain how additional products can be added.
+
+## POD Storefront
+
+Explain what was implemented and which features remain planned.
+
+## Infrastructure Readiness
+
+Explain what is currently real versus future provisioning functionality.
+
+## Security
+
+List security controls maintained or introduced.
+
+## SEO
+
+List metadata/routes updated.
+
+## Build/Test Results
+
+Run available:
+
+* lint
+* typecheck
+* build
+* tests
+
+Report PASS/FAIL individually.
+
+Do not claim PASS unless the command actually succeeded.
+
+## Outstanding Issues
+
+Document anything that requires manual action.
+
+## Recommended Phase 2
+
+Provide the exact next implementation sequence.
+
+---
+
+# FINAL IMPLEMENTATION PRINCIPLE
+
+Atlas should ultimately support two customer journeys:
+
+### BRING YOUR APPLICATION
+
+Customer
+→ Atlas Cloud
+→ Select Infrastructure
+→ Deploy Application
+→ Atlas Manages Infrastructure
+
+### BUY AN ATLAS PRODUCT
+
+Customer
+→ Atlas Products
+→ Select Application
+→ Subscribe
+→ Atlas Provisions Environment
+→ Customer Configures Business
+→ Application Runs on Atlas Cloud
+
+The website being modified now should establish the foundation for both models without pretending that future automation already exists.
+
+Preserve working code, make changes incrementally, keep infrastructure configuration modular, and do not introduce unnecessary dependencies.

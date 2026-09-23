@@ -1,0 +1,1745 @@
+# ATLAS CLOUD — PHASE 2A
+
+## SaaS FOUNDATION, SECURITY, TENANT ARCHITECTURE & SUPABASE-READY DESIGN
+
+### IMPORTANT CONSTRAINT
+
+DO NOT create, provision, connect to, or require a live Supabase project during this phase.
+
+The owner is intentionally postponing creation of the Supabase database/project.
+
+Phase 2A must prepare the Atlas application so Supabase can be connected later with minimal architectural change.
+
+The application must continue to build successfully without Supabase credentials.
+
+---
+
+# 1. ROLE
+
+Act as a senior:
+
+* SaaS architect
+* Next.js engineer
+* TypeScript engineer
+* PostgreSQL/Supabase architect
+* application-security engineer
+* multi-tenant systems engineer
+* DevOps engineer
+
+You are continuing development of the existing Atlas Cloud Hosting project after completion of Phase 1.
+
+Do NOT rebuild Phase 1.
+
+Do NOT redesign the marketing site unless a change is necessary to support the SaaS architecture.
+
+Preserve existing working functionality.
+
+---
+
+# 2. CURRENT VERIFIED PROJECT STATE
+
+Phase 1 established:
+
+* Next.js 15
+* React 19
+* TypeScript
+* App Router
+* Tailwind CSS
+* ShadCN/Radix UI
+* Atlas Cloud positioning
+* Cloud pricing
+* Atlas Products
+* POD Storefront product
+* centralized plan configuration
+* centralized product configuration
+* updated SEO
+* Node 22
+* successful production build
+* successful typecheck
+* successful lint
+* zero npm audit vulnerabilities at completion of Phase 1
+
+Existing important configuration includes:
+
+`config/plans.ts`
+
+and:
+
+`config/products.ts`
+
+Do not unnecessarily duplicate these sources of truth.
+
+---
+
+# 3. CURRENT KNOWN ISSUES
+
+The Phase 1 report identified:
+
+1. Supabase project has not been provisioned.
+2. Existing contact functionality expects Supabase.
+3. Existing admin functionality expects Supabase.
+4. Existing admin login contains insecure authentication logic.
+5. A plaintext/hardcoded password bypass exists.
+6. Public/anonymous Supabase credentials were being used improperly for administrative operations.
+7. Customer authentication does not yet exist.
+8. Customer control plane does not yet exist.
+9. Stripe does not yet exist.
+10. DigitalOcean automated provisioning does not yet exist.
+
+Phase 2A addresses architecture and security foundations only.
+
+---
+
+# 4. PHASE 2A OBJECTIVE
+
+Build the foundation required for Atlas to eventually operate as a multi-tenant SaaS/cloud control plane.
+
+At the end of this phase Atlas should have:
+
+* secure admin authentication architecture
+* customer authentication architecture
+* tenant/organization architecture
+* role architecture
+* entitlement architecture
+* project architecture
+* product-instance architecture
+* application/environment architecture
+* infrastructure-resource architecture
+* provisioning-job architecture
+* audit-log architecture
+* database migrations ready for future Supabase deployment
+* RLS policies ready for future Supabase deployment
+* TypeScript domain types
+* database service abstractions
+* customer dashboard scaffold
+* admin architecture
+* environment validation
+* development-safe behavior when Supabase is absent
+* security tests where practical
+
+BUT:
+
+No live Supabase project is to be created or required.
+
+---
+
+# 5. FIRST — INSPECT BEFORE MODIFYING
+
+Before writing code:
+
+Inspect the current repository.
+
+Specifically inspect:
+
+* `package.json`
+* `app/`
+* `components/`
+* `config/`
+* `lib/`
+* `middleware`
+* existing Supabase code
+* existing SQL migrations
+* admin authentication
+* contact API
+* cookies
+* environment handling
+* route handlers
+* server actions
+* TypeScript configuration
+
+Locate the exact security problems identified by Phase 1.
+
+Do not assume the Phase 1 report perfectly reflects the current repository.
+
+The repository is authoritative.
+
+Produce a concise inspection report before making modifications.
+
+---
+
+# 6. DO NOT CREATE SUPABASE
+
+This requirement is absolute for Phase 2A.
+
+DO NOT:
+
+* create a Supabase project
+* request Supabase credentials
+* connect to a remote Supabase instance
+* run remote migrations
+* deploy Supabase Edge Functions
+* require `SUPABASE_URL`
+* require `SUPABASE_ANON_KEY`
+* require `SUPABASE_SERVICE_ROLE_KEY`
+* fail the production build merely because those variables are missing
+
+Instead, create everything necessary so those values can be added later.
+
+---
+
+# 7. DATABASE-READY ARCHITECTURE
+
+Prepare PostgreSQL/Supabase migrations locally.
+
+Use numbered migrations consistent with the existing repository.
+
+Do not overwrite previous migrations unless genuinely necessary.
+
+Create schema support for the following entities.
+
+## Profiles
+
+Represents authenticated Atlas users.
+
+Suggested conceptual fields:
+
+* id
+* email where appropriate
+* display_name
+* created_at
+* updated_at
+
+Do not duplicate authentication secrets in profiles.
+
+---
+
+# 8. ORGANIZATIONS / TENANTS
+
+Atlas must be multi-tenant from the beginning.
+
+Create:
+
+`organizations`
+
+Conceptual fields:
+
+* id
+* name
+* slug
+* status
+* created_by
+* created_at
+* updated_at
+
+Possible status values:
+
+* active
+* suspended
+* closed
+
+A customer may eventually belong to multiple organizations.
+
+Do not design tenant isolation around `user_id` alone.
+
+---
+
+# 9. ORGANIZATION MEMBERS
+
+Create:
+
+`organization_members`
+
+Conceptual fields:
+
+* id
+* organization_id
+* user_id
+* role
+* status
+* created_at
+* updated_at
+
+Initial roles:
+
+* owner
+* admin
+* developer
+* billing
+* viewer
+
+Role names should be centralized rather than scattered as arbitrary strings throughout the application.
+
+---
+
+# 10. PROJECTS
+
+Create:
+
+`projects`
+
+A project represents a logical Atlas customer workload.
+
+Conceptual fields:
+
+* id
+* organization_id
+* name
+* slug
+* description
+* status
+* created_by
+* created_at
+* updated_at
+
+Potential statuses:
+
+* active
+* archived
+* suspended
+
+Every project must belong to an organization.
+
+---
+
+# 11. APPLICATIONS
+
+Create:
+
+`applications`
+
+Conceptual fields:
+
+* id
+* organization_id
+* project_id
+* name
+* slug
+* application_type
+* status
+* repository_url where appropriate
+* created_by
+* created_at
+* updated_at
+
+Potential application types:
+
+* nextjs
+* node
+* docker
+* api
+* worker
+* custom
+
+Do not advertise unsupported runtime types merely because the database can store them.
+
+---
+
+# 12. ENVIRONMENTS
+
+Create:
+
+`environments`
+
+Applications may eventually have:
+
+* production
+* staging
+* development
+
+Conceptual fields:
+
+* id
+* organization_id
+* project_id
+* application_id
+* name
+* environment_type
+* status
+* created_at
+* updated_at
+
+Infrastructure must ultimately attach to environments rather than directly to a marketing plan.
+
+---
+
+# 13. ATLAS PRODUCTS
+
+Do not confuse Atlas Products with customer applications.
+
+Create architecture for:
+
+`product_instances`
+
+This represents an Atlas Product purchased/activated for a customer.
+
+Examples:
+
+POD Storefront
+
+Future Atlas products
+
+Conceptual fields:
+
+* id
+* organization_id
+* product_id
+* project_id
+* status
+* configuration_status
+* created_at
+* updated_at
+
+`product_id` should map cleanly to Atlas's centralized product catalog.
+
+Do not duplicate the complete marketing product definition in every product instance.
+
+---
+
+# 14. SUBSCRIPTIONS
+
+Prepare:
+
+`subscriptions`
+
+This table belongs to Atlas.
+
+It must not simply mirror Stripe.
+
+Conceptual fields:
+
+* id
+* organization_id
+* plan_id
+* product_instance_id where appropriate
+* billing_provider
+* external_customer_id
+* external_subscription_id
+* status
+* current_period_start
+* current_period_end
+* cancel_at_period_end
+* created_at
+* updated_at
+
+No Stripe implementation is required in Phase 2A.
+
+Fields may remain nullable until billing is implemented.
+
+---
+
+# 15. ENTITLEMENTS
+
+This is a critical architectural component.
+
+Create:
+
+`entitlements`
+
+Atlas—not Stripe—determines customer capabilities.
+
+Conceptual fields:
+
+* id
+* organization_id
+* subscription_id
+* entitlement_key
+* entitlement_type
+* numeric_value
+* boolean_value
+* text_value
+* created_at
+* updated_at
+
+Possible future entitlement keys:
+
+* applications.max
+* databases.max
+* storage.gb
+* memory.mb
+* cpu.units
+* bandwidth.gb
+* backups.enabled
+* staging.enabled
+* private_networking.enabled
+* web3.enabled
+* managed_devops.enabled
+
+Do NOT hard-code billing-provider logic into authorization checks.
+
+---
+
+# 16. INFRASTRUCTURE RESOURCES
+
+Prepare:
+
+`infrastructure_resources`
+
+This becomes the Atlas record of resources eventually provisioned through providers such as DigitalOcean.
+
+Conceptual fields:
+
+* id
+* organization_id
+* project_id
+* environment_id
+* provider
+* provider_resource_id
+* resource_type
+* region
+* status
+* metadata
+* created_at
+* updated_at
+
+Possible future resource types:
+
+* compute
+* volume
+* database
+* network
+* firewall
+* load_balancer
+* object_storage
+* kubernetes
+
+Do not implement DigitalOcean calls yet.
+
+---
+
+# 17. PROVISIONING JOBS
+
+Create:
+
+`provisioning_jobs`
+
+Provisioning must be asynchronous.
+
+Conceptual fields:
+
+* id
+* organization_id
+* project_id
+* environment_id
+* product_instance_id
+* operation
+* status
+* attempts
+* idempotency_key
+* error_code
+* error_message
+* requested_by
+* started_at
+* completed_at
+* created_at
+* updated_at
+
+Supported state architecture should accommodate:
+
+* pending
+* queued
+* provisioning
+* configuring
+* deploying
+* verifying
+* ready
+* failed
+* suspended
+* deprovisioning
+* deleted
+
+Do not create fake infrastructure jobs in production.
+
+---
+
+# 18. DEPLOYMENTS
+
+Prepare:
+
+`deployments`
+
+Conceptual fields:
+
+* id
+* organization_id
+* application_id
+* environment_id
+* status
+* source_type
+* source_reference
+* commit_sha
+* started_at
+* completed_at
+* created_by
+* created_at
+
+Potential statuses:
+
+* queued
+* building
+* deploying
+* ready
+* failed
+* cancelled
+
+No actual deployment engine is required yet.
+
+---
+
+# 19. DOMAINS
+
+Prepare:
+
+`domains`
+
+Conceptual fields:
+
+* id
+* organization_id
+* project_id
+* application_id
+* environment_id
+* hostname
+* status
+* ssl_status
+* created_at
+* updated_at
+
+Do not automatically modify DNS in Phase 2A.
+
+---
+
+# 20. DATABASE RESOURCES
+
+Prepare an Atlas control-plane representation for customer databases.
+
+Do not confuse this with the Atlas internal database.
+
+Suggested table:
+
+`database_resources`
+
+Conceptual fields:
+
+* id
+* organization_id
+* project_id
+* environment_id
+* engine
+* version
+* status
+* infrastructure_resource_id
+* created_at
+* updated_at
+
+Never store customer database plaintext passwords directly in this table.
+
+---
+
+# 21. AUDIT LOG
+
+Create:
+
+`audit_logs`
+
+Atlas will manage infrastructure and therefore needs an audit trail.
+
+Conceptual fields:
+
+* id
+* organization_id
+* actor_user_id
+* actor_type
+* action
+* target_type
+* target_id
+* metadata
+* ip_address where appropriate
+* created_at
+
+Audit records should be append-oriented.
+
+Customers should not be able to modify audit records.
+
+---
+
+# 22. SECURITY EVENTS
+
+Consider a separate:
+
+`security_events`
+
+for events such as:
+
+* failed authentication
+* privilege changes
+* suspicious authorization failures
+* API token changes
+* administrative impersonation if eventually supported
+* infrastructure credential changes
+
+Do not store secrets inside security-event metadata.
+
+---
+
+# 23. ROW LEVEL SECURITY
+
+Write Supabase/PostgreSQL RLS policies now even though they will not be deployed yet.
+
+RLS should be designed around organization membership.
+
+Core rule:
+
+A customer can only access resources belonging to organizations in which that authenticated user has an active membership.
+
+Do NOT rely on:
+
+`organization_id` supplied by the browser.
+
+The database must independently establish membership.
+
+Create policies for appropriate tables including:
+
+* organizations
+* organization_members
+* projects
+* applications
+* environments
+* product_instances
+* subscriptions
+* entitlements
+* infrastructure_resources
+* provisioning_jobs
+* deployments
+* domains
+* database_resources
+
+Be especially conservative with:
+
+* billing data
+* infrastructure metadata
+* audit logs
+* security events
+
+---
+
+# 24. SERVICE ROLE SECURITY
+
+Do NOT use the Supabase service-role key as a replacement for normal authorization.
+
+Future service-role usage must be restricted to trusted server-side operations that genuinely require RLS bypass.
+
+Examples might eventually include:
+
+* provisioning workers
+* webhook processors
+* internal billing synchronization
+* infrastructure synchronization
+* administrative system jobs
+
+Never expose the service-role key:
+
+* in browser code
+* in `NEXT_PUBLIC_*`
+* in client components
+* in HTML
+* in API responses
+
+---
+
+# 25. AUTHENTICATION ARCHITECTURE
+
+Prepare Atlas for Supabase Auth.
+
+Do not require live authentication during this phase.
+
+Create clean boundaries for:
+
+* server-side user retrieval
+* session validation
+* authenticated route protection
+* organization membership lookup
+* role checks
+* permission checks
+
+Avoid sprinkling authentication logic directly throughout UI components.
+
+Prefer centralized helpers such as conceptually:
+
+`requireUser()`
+
+`requireOrganizationMember()`
+
+`requireOrganizationRole()`
+
+`canAccessProject()`
+
+Exact naming may follow existing repository conventions.
+
+---
+
+# 26. REMOVE THE ADMIN BACKDOOR
+
+This must be addressed now.
+
+Inspect the existing admin login implementation.
+
+Remove:
+
+* plaintext password bypasses
+* hardcoded admin credentials
+* insecure comparison functions
+* insecure fallback authentication
+
+Do not replace the backdoor with another hardcoded credential.
+
+If proper live authentication cannot function without Supabase, the secure behavior is:
+
+**admin authentication unavailable until configured**
+
+rather than:
+
+**fallback password accepted**
+
+Fail closed.
+
+---
+
+# 27. ADMIN AUTHORIZATION
+
+Prepare Atlas for an internal platform role separate from organization roles.
+
+Conceptually distinguish:
+
+### Atlas Platform Roles
+
+* platform_admin
+* support
+* operations
+
+from:
+
+### Customer Organization Roles
+
+* owner
+* admin
+* developer
+* billing
+* viewer
+
+A customer organization owner is NOT automatically an Atlas platform administrator.
+
+Do not mix these permission domains.
+
+---
+
+# 28. LOCAL DEVELOPMENT WITHOUT SUPABASE
+
+The project must work in a safe unconfigured state.
+
+Implement environment detection.
+
+Conceptually:
+
+`isSupabaseConfigured()`
+
+When Supabase is absent:
+
+Marketing pages should work.
+
+Pricing should work.
+
+Products should work.
+
+POD Storefront page should work.
+
+Static content should work.
+
+Database-dependent functionality should show an appropriate unavailable/configuration state.
+
+It must NOT silently fake successful persistence.
+
+Example:
+
+Contact form:
+
+> Contact services are temporarily unavailable.
+
+rather than returning a fake success response.
+
+---
+
+# 29. ENVIRONMENT VARIABLES
+
+Create/update:
+
+`.env.example`
+
+Document future variables.
+
+Potential future variables:
+
+`NEXT_PUBLIC_SUPABASE_URL=`
+
+`NEXT_PUBLIC_SUPABASE_ANON_KEY=`
+
+`SUPABASE_SERVICE_ROLE_KEY=`
+
+Do not populate them.
+
+Also prepare sections for future:
+
+Stripe
+
+DigitalOcean
+
+Deployment provider
+
+But do not require those values now.
+
+Example organization:
+
+```text
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+
+# Stripe — Phase 2B/2C
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+
+# DigitalOcean — Phase 3
+DIGITALOCEAN_API_TOKEN=
+
+# Deployment Platform — Future
+DEPLOYMENT_API_URL=
+DEPLOYMENT_API_TOKEN=
+```
+
+No real credentials belong in `.env.example`.
+
+---
+
+# 30. ENVIRONMENT VALIDATION
+
+Implement centralized server-side environment validation.
+
+Differentiate between:
+
+### Required for build
+
+Only variables genuinely required to compile.
+
+### Required for optional services
+
+Supabase
+
+Stripe
+
+DigitalOcean
+
+Deployment provider
+
+Atlas should be capable of determining:
+
+Supabase configured: false
+
+Stripe configured: false
+
+DigitalOcean configured: false
+
+without crashing the marketing site.
+
+---
+
+# 31. SERVICE ABSTRACTION
+
+Create a clean database/data-access boundary.
+
+Do not allow every component to directly instantiate Supabase clients.
+
+Prepare modules conceptually such as:
+
+`lib/db/`
+
+`lib/auth/`
+
+`lib/organizations/`
+
+`lib/entitlements/`
+
+`lib/provisioning/`
+
+Use repository conventions where appropriate.
+
+Future provider changes should not require rewriting every page.
+
+---
+
+# 32. DOMAIN TYPES
+
+Create strongly typed TypeScript domain models for:
+
+* User/Profile
+* Organization
+* OrganizationMember
+* OrganizationRole
+* Project
+* Application
+* Environment
+* ProductInstance
+* Subscription
+* Entitlement
+* InfrastructureResource
+* ProvisioningJob
+* Deployment
+* Domain
+* DatabaseResource
+* AuditLog
+
+Do not use `any` to bypass architectural decisions.
+
+---
+
+# 33. CUSTOMER CONTROL PLANE SCAFFOLD
+
+Prepare a customer dashboard.
+
+Use the current application architecture unless a separate subdomain implementation is already clearly supported.
+
+Potential initial route:
+
+`/dashboard`
+
+or an equivalent route group.
+
+Do NOT prematurely configure DNS for:
+
+`app.atlascloudhosting.com`
+
+The dashboard should establish the UX architecture for the future control plane.
+
+---
+
+# 34. DASHBOARD NAVIGATION
+
+Prepare navigation for:
+
+* Overview
+* Projects
+* Applications
+* Products
+* Deployments
+* Databases
+* Domains
+* Monitoring
+* Billing
+* Settings
+
+Features that do not exist yet should be clearly marked appropriately or excluded.
+
+Do not create fake operational data.
+
+---
+
+# 35. DASHBOARD OVERVIEW
+
+When authentication/database services are not configured, provide a development-safe state.
+
+Do not fabricate:
+
+* applications
+* servers
+* deployments
+* billing
+* usage
+* uptime
+
+If a UI preview requires sample data during development, isolate it explicitly as:
+
+`development fixture`
+
+and ensure it cannot appear as real production data.
+
+---
+
+# 36. PROJECT MODEL
+
+The dashboard hierarchy should conceptually become:
+
+Organization
+
+→ Project
+
+→ Application/Product Instance
+
+→ Environment
+
+→ Infrastructure Resources
+
+→ Deployment
+
+This hierarchy should guide routes and data access.
+
+---
+
+# 37. ATLAS PRODUCT MODEL
+
+Support this future customer journey:
+
+Atlas Products
+
+→ POD Storefront
+
+→ Subscribe
+
+→ Product Instance
+
+→ Project
+
+→ Environment
+
+→ Provisioning Job
+
+→ Infrastructure
+
+→ Application Deployment
+
+→ Ready
+
+Do not implement provisioning yet.
+
+Prepare the data model.
+
+---
+
+# 38. ENTITLEMENT SERVICE
+
+Create an entitlement evaluation abstraction.
+
+Conceptually support future calls such as:
+
+`hasEntitlement()`
+
+`getEntitlementLimit()`
+
+`canCreateApplication()`
+
+`canCreateDatabase()`
+
+Do not derive these permissions directly from a Stripe price ID.
+
+The control plane should ask Atlas entitlements.
+
+---
+
+# 39. PLAN CONFIGURATION INTEGRATION
+
+Existing cloud plans live in:
+
+`config/plans.ts`
+
+Do not create a second competing source of truth unnecessarily.
+
+Determine how future plan IDs map cleanly into:
+
+* subscriptions
+* entitlements
+* provisioning templates
+
+Document this mapping.
+
+Do NOT implement provisioning templates yet.
+
+---
+
+# 40. PRODUCT CONFIGURATION INTEGRATION
+
+Existing Atlas Products live in:
+
+`config/products.ts`
+
+Product instances should reference stable product IDs/slugs from that catalog.
+
+Do not duplicate the entire POD Storefront marketing definition into database rows.
+
+---
+
+# 41. PREPARE FOR STRIPE — DO NOT IMPLEMENT STRIPE
+
+Stripe comes later.
+
+Prepare interfaces/types for future billing events.
+
+Potential subscription states:
+
+* incomplete
+* trialing
+* active
+* past_due
+* canceled
+* unpaid
+
+But keep Atlas internal state decoupled from Stripe-specific code.
+
+No checkout implementation yet.
+
+No webhook implementation yet.
+
+No Stripe SDK unless genuinely required for architecture—and preferably do not install it in Phase 2A.
+
+---
+
+# 42. PREPARE FOR DIGITALOCEAN — DO NOT CALL DIGITALOCEAN
+
+Create infrastructure provider abstractions only if useful.
+
+Conceptually:
+
+`InfrastructureProvider`
+
+Future implementations could include:
+
+`DigitalOceanProvider`
+
+Potential future methods:
+
+* createCompute()
+* deleteCompute()
+* createNetwork()
+* createFirewall()
+* getResourceStatus()
+
+Do NOT implement live API requests.
+
+Do NOT install unnecessary DigitalOcean dependencies.
+
+Do NOT request an API token.
+
+---
+
+# 43. PROVIDER INDEPENDENCE
+
+Do not make Atlas database architecture DigitalOcean-specific.
+
+For example, store:
+
+`provider = "digitalocean"`
+
+and:
+
+`provider_resource_id`
+
+rather than creating fields such as:
+
+`digitalocean_droplet_id`
+
+throughout the schema.
+
+This allows future support for another provider without rewriting the Atlas domain model.
+
+---
+
+# 44. PROVISIONING IDEMPOTENCY
+
+Prepare the schema for idempotent provisioning.
+
+Every future provisioning operation should be capable of carrying a unique:
+
+`idempotency_key`
+
+The architecture must prevent:
+
+one purchase
+
+from becoming:
+
+two servers
+
+because a webhook or worker retries.
+
+No provisioning worker is required yet.
+
+---
+
+# 45. AUDITABILITY
+
+Prepare utility architecture for future actions such as:
+
+* organization.created
+* member.invited
+* member.role_changed
+* project.created
+* application.created
+* product.activated
+* subscription.changed
+* provisioning.requested
+* provisioning.failed
+* infrastructure.created
+* infrastructure.deleted
+
+Do not record secrets in metadata.
+
+---
+
+# 46. SECURITY TEST DESIGN
+
+Even without live Supabase, create tests where practical for pure authorization logic.
+
+At minimum test conceptual rules such as:
+
+Customer A cannot access Customer B's organization.
+
+Customer A cannot access Customer B's project.
+
+Customer A cannot access Customer B's application.
+
+Customer A cannot access Customer B's product instance.
+
+Customer A cannot access Customer B's infrastructure resource.
+
+Viewer cannot perform owner/admin operations.
+
+Organization owner does not become platform admin.
+
+Unauthenticated user cannot access customer dashboard resources.
+
+Do not claim RLS itself was tested against Supabase because no Supabase project exists.
+
+Clearly distinguish:
+
+**authorization unit tests**
+
+from:
+
+**future database/RLS integration tests**
+
+---
+
+# 47. SQL SECURITY TEST SCRIPT
+
+Prepare a future SQL test/checklist for RLS validation.
+
+It should eventually verify:
+
+User A
+
+Organization A
+
+Project A
+
+versus:
+
+User B
+
+Organization B
+
+Project B
+
+and demonstrate that cross-tenant SELECT/INSERT/UPDATE/DELETE operations fail.
+
+Do not claim it was executed remotely.
+
+---
+
+# 48. CONTACT FORM
+
+The current contact form depends on Supabase.
+
+Refactor it so missing Supabase configuration does not produce an uncontrolled 500.
+
+Expected behavior when unconfigured:
+
+* UI remains functional
+* submission is rejected gracefully
+* no fake success
+* server logs an appropriate configuration warning
+* secrets are not exposed
+
+---
+
+# 49. ADMIN DASHBOARD
+
+Existing admin dashboard functionality may depend on Supabase.
+
+Do not remove useful UI unnecessarily.
+
+Make it fail closed when backend configuration is unavailable.
+
+Do not allow development fallback credentials in production.
+
+---
+
+# 50. ERROR HANDLING
+
+Create consistent errors for:
+
+* unauthenticated
+* unauthorized
+* service unavailable
+* configuration missing
+* resource not found
+* validation error
+* internal error
+
+Do not expose:
+
+* SQL errors
+* Supabase secrets
+* provider credentials
+* stack traces
+* internal infrastructure identifiers unnecessarily
+
+to customers.
+
+---
+
+# 51. LOGGING
+
+Prepare structured server logging.
+
+Avoid logging:
+
+* passwords
+* tokens
+* cookies
+* Stripe secrets
+* DigitalOcean credentials
+* Supabase service-role key
+
+Future provisioning jobs must be traceable without exposing secrets.
+
+---
+
+# 52. NO MOCK PRODUCTION SUCCESS
+
+This rule is critical.
+
+If Supabase is not configured:
+
+Do NOT make authentication appear successful.
+
+Do NOT make contact submissions appear stored.
+
+Do NOT make projects appear created.
+
+Do NOT make products appear provisioned.
+
+Do NOT make infrastructure appear deployed.
+
+Development fixtures are permitted only if clearly isolated and labeled.
+
+---
+
+# 53. MIGRATION DOCUMENTATION
+
+Create documentation such as:
+
+`docs/SUPABASE-SETUP.md`
+
+This should explain what the owner will do later.
+
+Include:
+
+1. Create Supabase project.
+2. Obtain project URL.
+3. Obtain public anon/publishable credential as appropriate to the supported Supabase setup.
+4. Obtain service-role secret for trusted server operations only.
+5. Populate environment variables.
+6. Apply migrations.
+7. Verify authentication.
+8. Verify RLS.
+9. Run tenant isolation tests.
+10. Verify contact form.
+11. Verify admin access.
+12. Verify customer dashboard.
+
+Do not instruct the owner to expose service-role credentials publicly.
+
+---
+
+# 54. ARCHITECTURE DOCUMENTATION
+
+Create:
+
+`docs/ATLAS-SAAS-ARCHITECTURE.md`
+
+Document:
+
+## Control Plane
+
+Atlas application.
+
+## Authentication
+
+Supabase Auth planned.
+
+## Database
+
+Supabase/PostgreSQL planned.
+
+## Tenant Boundary
+
+Organization.
+
+## Billing
+
+Stripe planned.
+
+## Entitlements
+
+Atlas-controlled.
+
+## Infrastructure Provider
+
+DigitalOcean planned first.
+
+## Deployment Provider
+
+Separate abstraction.
+
+## Product Platform
+
+Atlas Products.
+
+## Provisioning
+
+Asynchronous future worker.
+
+Include an architecture diagram using Mermaid or text.
+
+---
+
+# 55. PHASE BOUNDARIES
+
+DO NOT implement during Phase 2A:
+
+* live Supabase
+* Stripe checkout
+* Stripe webhooks
+* DigitalOcean API calls
+* automatic server creation
+* Coolify API integration
+* production application deployment
+* customer usage metering
+* automatic billing upgrades
+* Kubernetes provisioning
+* Web3 node provisioning
+
+Prepare for them only.
+
+---
+
+# 56. BUILD REQUIREMENTS
+
+After implementation run:
+
+`npm install`
+
+if dependencies changed.
+
+Then run the project's actual scripts for:
+
+* typecheck
+* lint
+* build
+* tests
+* npm audit
+
+Do not report PASS unless the command actually succeeds.
+
+If a script does not exist, report:
+
+`NOT CONFIGURED`
+
+rather than PASS.
+
+---
+
+# 57. VERIFY BUILD WITHOUT SUPABASE
+
+This is mandatory.
+
+Remove/unset Supabase environment variables during verification.
+
+Then confirm:
+
+`npm run build`
+
+still succeeds.
+
+The marketing website must not depend upon a live database to compile.
+
+---
+
+# 58. SECURITY VERIFICATION
+
+Explicitly verify:
+
+* no hardcoded admin password remains
+* no plaintext credential bypass remains
+* no service-role key is client accessible
+* no secrets use `NEXT_PUBLIC_*` incorrectly
+* dashboard authorization helpers fail closed
+* absent Supabase configuration does not create authentication bypass
+* no mock production persistence occurs
+
+---
+
+# 59. REQUIRED PHASE 2A REPORT
+
+At completion provide:
+
+# Atlas Cloud — Phase 2A Implementation Report
+
+## Repository Inspection
+
+What existed before modifications.
+
+## Security Findings
+
+Exact security problems discovered.
+
+## Security Changes
+
+What was corrected.
+
+## Database Architecture
+
+Tables/migrations created.
+
+## Tenant Model
+
+Explain organization isolation.
+
+## Authentication Architecture
+
+Explain how Supabase Auth will connect later.
+
+## Authorization Architecture
+
+Explain roles and permission enforcement.
+
+## RLS
+
+List policies prepared.
+
+Explicitly state they have NOT been remotely tested if no Supabase exists.
+
+## Entitlements
+
+Explain the Atlas entitlement architecture.
+
+## Product Instances
+
+Explain how POD Storefront maps into customer accounts.
+
+## Infrastructure Model
+
+Explain provider-independent infrastructure records.
+
+## Provisioning Architecture
+
+Explain job/state/idempotency architecture.
+
+## Dashboard
+
+List implemented routes/components.
+
+## Supabase-Disabled Behavior
+
+Explain what happens without configuration.
+
+## Environment Variables
+
+List placeholders added.
+
+## Documentation
+
+List documents created.
+
+## Tests
+
+List tests created and results.
+
+## Build Verification
+
+Report separately:
+
+Typecheck: PASS / FAIL / NOT CONFIGURED
+
+Lint: PASS / FAIL / NOT CONFIGURED
+
+Tests: PASS / FAIL / NOT CONFIGURED
+
+Build: PASS / FAIL
+
+npm audit: result
+
+Build without Supabase credentials: PASS / FAIL
+
+## Outstanding Issues
+
+List unresolved items.
+
+## Database Activation Checklist
+
+Exact steps the owner must eventually perform when ready to create Supabase.
+
+## Recommended Phase 2B
+
+Do not implement Phase 2B.
+
+Recommend the next sequence.
+
+---
+
+# 60. STOP CONDITION
+
+When Phase 2A is complete:
+
+STOP.
+
+Do NOT continue automatically into:
+
+Stripe
+
+DigitalOcean
+
+Coolify
+
+or live Supabase provisioning.
+
+Return the Phase 2A implementation report and wait for approval.
+
+---
+
+# FINAL ARCHITECTURAL PRINCIPLE
+
+Atlas is becoming a control plane over applications, products, subscriptions, entitlements, deployments, and cloud infrastructure.
+
+The architecture should ultimately support:
+
+CUSTOMER
+
+→ ATLAS ACCOUNT
+
+→ ORGANIZATION
+
+→ SUBSCRIPTION
+
+→ ENTITLEMENTS
+
+→ PROJECT
+
+→ APPLICATION / ATLAS PRODUCT
+
+→ ENVIRONMENT
+
+→ PROVISIONING JOB
+
+→ INFRASTRUCTURE PROVIDER
+
+→ DEPLOYMENT PLATFORM
+
+→ RUNNING APPLICATION
+
+But Phase 2A builds only the secure SaaS foundation.
+
+Do not create infrastructure.
+
+Do not connect billing.
+
+Do not create Supabase.
+
+Build the foundation correctly first.

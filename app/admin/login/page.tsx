@@ -116,15 +116,7 @@ export default function AdminLoginPage() {
                 </Button>
               </form>
 
-              <div className="mt-6 p-4 bg-white/5 rounded-lg">
-                <p className="text-soft-silver/60 text-xs text-center mb-2">Default credentials:</p>
-                <p className="text-soft-silver/80 text-sm font-mono text-center">
-                  admin@atlascloud.hosting
-                </p>
-                <p className="text-soft-silver/80 text-sm font-mono text-center">
-                  admin123
-                </p>
-              </div>
+
             </CardContent>
           </Card>
         </div>
