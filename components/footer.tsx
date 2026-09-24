@@ -40,6 +40,7 @@ export default function Footer() {
               {[
                 { href: '/cloud', label: 'Cloud' },
                 { href: '/products', label: 'Products' },
+                { href: '/services', label: 'Services' },
                 { href: '/web3', label: 'Web3' },
                 { href: '/pricing', label: 'Pricing' },
                 { href: '/status', label: 'System Status' },

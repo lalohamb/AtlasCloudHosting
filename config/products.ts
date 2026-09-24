@@ -42,10 +42,10 @@ export const products: Product[] = [
       'A complete e-commerce storefront designed for Printify-powered businesses, hosted and managed on Atlas Cloud. Everything you need to sell custom products online — without building the technology yourself.',
     category: 'e-commerce',
     pricing: {
-      model: 'setup_plus_subscription',
+      model: 'subscription',
       setupFee: null,
-      monthlyPrice: null,
-      priceNote: 'Pricing coming soon — contact us for early access.',
+      monthlyPrice: 79,
+      priceNote: '$79/month — includes hosting, SSL, backups, monitoring, and platform updates.',
     },
     features: [
       { label: 'Branded storefront', status: 'available' },
@@ -68,7 +68,7 @@ export const products: Product[] = [
     integrations: ['Printify', 'Stripe'],
     status: 'available',
     featured: true,
-    cta: 'Get Early Access',
+    cta: 'Get Started — $79/month',
     ctaHref: '/contact',
     badge: 'New',
   },

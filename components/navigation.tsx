@@ -10,6 +10,7 @@ import AtlasLogo from '@/components/atlas-logo';
 const navLinks = [
   { href: '/cloud', label: 'Cloud' },
   { href: '/products', label: 'Products' },
+  { href: '/services', label: 'Services' },
   { href: '/web3', label: 'Web3' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/about', label: 'About' },
